@@ -1,0 +1,112 @@
+
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a product available for sale on SS Smart Haat.",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "discountPercentage": { "type": "number" },
+        "imageUrl": { "type": "string", "format": "uri" },
+        "category": { "type": "string" },
+        "sizes": { "type": "array", "items": { "type": "string" } },
+        "sizeStock": { 
+          "type": "object",
+          "additionalProperties": { "type": "number" },
+          "description": "Quantity per size (e.g., {'M': 50, 'L': 20})"
+        },
+        "stockQuantity": { "type": "number", "description": "Global quantity if no sizes exist." },
+        "showInSlider": { "type": "boolean" },
+        "showInFlashOffer": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "description", "price", "imageUrl", "category"]
+    },
+    "Category": {
+      "title": "Category",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "imageUrl": { "type": "string", "format": "uri" }
+      },
+      "required": ["name", "imageUrl"]
+    },
+    "Order": {
+      "title": "Order",
+      "type": "object",
+      "properties": {
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerAddress": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string" },
+        "productPrice": { "type": "number" },
+        "selectedSize": { "type": "string" },
+        "quantity": { "type": "number" },
+        "deliveryCharge": { "type": "number" },
+        "status": { "type": "string", "enum": ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customerName", "customerPhone", "customerAddress", "productId", "status", "quantity"]
+    },
+    "Message": {
+      "title": "Message",
+      "type": "object",
+      "description": "A real-time chat message between customer and admin.",
+      "properties": {
+        "orderId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "text": { "type": "string" },
+        "sender": { "type": "string", "enum": ["CUSTOMER", "ADMIN"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orderId", "text", "sender", "createdAt"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "descriptionBengali": { "type": "string" },
+        "facebookUrl": { "type": "string" },
+        "instagramUrl": { "type": "string" },
+        "twitterUrl": { "type": "string" },
+        "youtubeUrl": { "type": "string" },
+        "whatsappUrl": { "type": "string" },
+        "qrCodeLink": { "type": "string", "format": "uri" },
+        "adminUsername": { "type": "string" },
+        "adminPassword": { "type": "string" },
+        "deliveryChargeInside": { "type": "number" },
+        "deliveryChargeOutside": { "type": "number" }
+      }
+    },
+    "LoginStats": {
+      "title": "LoginStats",
+      "type": "object",
+      "properties": {
+        "count": { "type": "number" },
+        "date": { "type": "string" }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["password", "anonymous"]
+  },
+  "firestore": {
+    "/products/{productId}": { "schema": { "$ref": "#/backend/entities/Product" }, "description": "Stores product information." },
+    "/categories/{categoryId}": { "schema": { "$ref": "#/backend/entities/Category" }, "description": "Stores product categories." },
+    "/orders/{orderId}": { "schema": { "$ref": "#/backend/entities/Order" }, "description": "Stores customer orders." },
+    "/messages/{messageId}": { "schema": { "$ref": "#/backend/entities/Message" }, "description": "Stores chat messages." },
+    "/settings/{settingId}": { "schema": { "$ref": "#/backend/entities/SiteSettings" }, "description": "Global site settings document." },
+    "/loginStats/{date}": { "schema": { "$ref": "#/backend/entities/LoginStats" }, "description": "Stores daily login counts." }
+  }
+}
